@@ -4,10 +4,7 @@ Entra ID (Azure) Authentication Success
 
 In this scenario, we want to visually look for login attempts by users that are accessing the VM successfully. We set this up in Azure Sentinel and we’re going to use this query: 
 
-SigninLogs
-| where ResultType == 0
-| summarize LoginCount = count() by Identity, Latitude = tostring(LocationDetails["geoCoordinates"]["latitude"]), Longitude = tostring(LocationDetails["geoCoordinates"]["longitude"]), City = tostring(LocationDetails["city"]), Country = tostring(LocationDetails["countryOrRegion"])
-| project Identity, Latitude, Longitude, City, Country, LoginCount, friendly_label = strcat(Identity, " - ", City, ", ", Country)
+![image](https://github.com/user-attachments/assets/46e7901a-4c02-41ad-9564-c1600aa46a5c)
 
 This query analyzes sign-in logs to give you a clear picture of user activity. Here’s a simple breakdown:  
 
@@ -38,10 +35,7 @@ Entra ID (Azure) Authentication Failures
 
 We’re looking at the unsuccessful login attempts by users trying to access the system or the VM in this scenario. This will give a good indication of the bad actors that are trying to access the system. 
 
-SigninLogs
-| where ResultType != 0
-| summarize LoginCount = count() by Identity, Latitude = tostring(LocationDetails["geoCoordinates"]["latitude"]), Longitude = tostring(LocationDetails["geoCoordinates"]["longitude"]), City = tostring(LocationDetails["city"]), Country = tostring(LocationDetails["countryOrRegion"])
-| project Identity, Latitude, Longitude, City, Country, LoginCount, friendly_label = strcat(Identity, " - ", City, ", ", Country)
+![image](https://github.com/user-attachments/assets/8b2196ef-acd4-4bc3-b1bf-ed3aaebf6ce3)
 
 1. **SigninLogs** 📜: This is where Azure AD sign-in data is stored.
 
@@ -70,12 +64,7 @@ VM Authentication Failures
 
 In this scenario, we’re looking at the failed login attempts in the VM. 
 
-let GeoIPDB_FULL = _GetWatchlist("geoip");
-DeviceLogonEvents
-| where ActionType == "LogonFailed"
-| order by TimeGenerated desc
-| evaluate ipv4_lookup(GeoIPDB_FULL, RemoteIP, network)
-| summarize LoginAttempts = count() by RemoteIP, City = cityname, Country = countryname, friendly_location = strcat(cityname, " (", countryname, ")"), Latitude = latitude, Longitude = longitude;
+![image](https://github.com/user-attachments/assets/7996b6a1-d382-47e6-93af-dfcfd53a0238)
 
 GeoIP Watchlist 🌍:
 let GeoIPDB_FULL = _GetWatchlist("geoip");
